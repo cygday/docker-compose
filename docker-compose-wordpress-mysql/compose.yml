@@ -1,0 +1,44 @@
+
+services:
+  
+   mysql_db:
+    container_name: wordpress_db
+    image: mysql:8.0.27
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root@123
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: demouser
+      MYSQL_PASSWORD: demo@123
+    networks:
+      - mywpnetwork
+    volumes:
+      - mysql_vol:/var/lib/mysql
+        
+   wordpress:
+    container_name: wordpress_container
+      #depends on:
+      # mysql_db:
+    image: wordpress:latest
+    restart: always
+    ports:
+      - "5000:80" #expose wordpress on http://localhost:4000
+    environment:
+      WORDPRESS_DB_HOST: mysql_db
+      WORDPRESS_DB_USER: demouser #mysql_user and wordpress_user->demouser
+      WORDPRESS_DB_PASSWORD: demo@123 #mysql and wordpress passwd->demo@123
+      WORDPRESS_DB_NAME: wordpress #mysql and wordpress db -> wordpress
+    networks:
+      - mywpnetwork
+    volumes:
+      - wordpress_data:/var/www/html
+   
+networks:
+  mywpnetwork:
+  
+
+volumes:
+  mysql_vol:
+  wordpress_data:
+
+
